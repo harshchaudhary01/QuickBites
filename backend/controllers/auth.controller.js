@@ -41,3 +41,32 @@ export const signUp = async (req, res) =>{
         return res.status(201).json(`SignUp Error: ${error}`);
     }
 }
+
+
+export const signIn = async (req, res) =>{
+    try {
+        const {email, password} = req.body;
+        const user = User.findOne({email});
+        if(!user){
+            return res.status(400).json({message: "User doesn't exist."});
+        }
+
+        const isMatch = bcrypt.compare(password, user.password);
+        if(!isMatch){
+            return res.status(400).json({message: "Incorrect Password!"});
+        }
+
+        const token = await generateToken(user._id);
+        res.cookie("token", token, {
+            secure: false, // in the dev phase, we use "false" because we only uses "http" & secure means "https"...
+            sameSite: "strict", // whenever, we put secure = false, we also put sameSite = "strict"
+            maxAge: 7*24*60*60*1000, // we give the value in millisecond not like "7d"
+            httpOnly: true,
+        })
+
+        return res.status(200).json(user);
+
+    } catch (error) {
+        return res.status(500).json(`Sign In Error: ${error}`);
+    }
+}
