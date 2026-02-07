@@ -1,11 +1,11 @@
 import User from "../models/user.model.js";
-import bcrypt from "bcrypt.js";
+import bcrypt from "bcrypt";
 import generateToken from "../utils/token.js";
 
 export const signUp = async (req, res) =>{
     try {
-        const {userName, email, password, mobile, role} = req.body;
-        const user = await User.findOne({email});
+        const {fullName, email, password, mobile, role} = req.body;
+        let user = await User.findOne({email});
         if(user){
             return res.status(400).json({message: "User already exist."}); // we use "400", bcoz it's the fault of client side user.
         }
@@ -38,7 +38,7 @@ export const signUp = async (req, res) =>{
         return res.status(201).json(user);
 
     } catch (error) {
-        return res.status(201).json(`SignUp Error: ${error}`);
+        return res.status(500).json(`SignUp Error: ${error}`);
     }
 }
 
@@ -46,12 +46,12 @@ export const signUp = async (req, res) =>{
 export const signIn = async (req, res) =>{
     try {
         const {email, password} = req.body;
-        const user = User.findOne({email});
+        const user = await User.findOne({email});
         if(!user){
             return res.status(400).json({message: "User doesn't exist."});
         }
 
-        const isMatch = bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch){
             return res.status(400).json({message: "Incorrect Password!"});
         }

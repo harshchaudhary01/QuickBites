@@ -5,6 +5,7 @@
   "license": "ISC",
   "author": "Harsh Kumar Chaudhary",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon index.js"
   },
