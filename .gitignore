@@ -1,0 +1,58 @@
+# --------------------
+# Dependencies
+# --------------------
+node_modules/
+vendor/
+
+# --------------------
+# Build outputs
+# --------------------
+dist/
+build/
+.out/
+.next/
+coverage/
+
+# --------------------
+# Environment files
+# --------------------
+.env
+.env.*
+!.env.example
+
+# --------------------
+# Logs
+# --------------------
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+
+# --------------------
+# OS / Editor junk
+# --------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# --------------------
+# Runtime files
+# --------------------
+*.pid
+*.seed
+*.log
+
+# --------------------
+# Backend-specific
+# --------------------
+__pycache__/
+*.sqlite
+*.db
+
+# --------------------
+# Frontend-specific
+# --------------------
+.eslintcache
