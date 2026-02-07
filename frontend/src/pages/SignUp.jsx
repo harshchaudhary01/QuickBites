@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useState } from 'react';
 import axios from 'axios';
 import { serverUrl } from '../App';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
     const primaryColor = "#ff4d2d";
@@ -19,6 +20,8 @@ const SignUp = () => {
     const [email, setEmail] = useState("");
     const [mobile, setMobile] = useState("");
     const [password, setPassword] = useState("");
+
+    const navigate = useNavigate();
 
     const handleSignUp = async ()=>{
         try {
@@ -105,7 +108,7 @@ const SignUp = () => {
                     <FcGoogle size={25} />
                     <span>Continue with Google</span>
                 </button>
-                <p className='text-center mt-5'>Already have an account ? <span className='text-[#ff4d2d] cursor-pointer '>Sign In</span></p>
+                <p className='text-center mt-5'>Already have an account ? <span onClick={()=>{navigate("/signin")}} className='text-[#ff4d2d] cursor-pointer '>Sign In</span></p>
             </div>
         </div>
     )
