@@ -70,3 +70,12 @@ export const signIn = async (req, res) =>{
         return res.status(500).json(`Sign In Error: ${error}`);
     }
 }
+
+export const signOut = async (req, res) =>{
+    try {
+        res.clearCookie("token");
+        return res.status(200).json({message: `Logout Successfully!`});
+    } catch (error) {
+        res.status(500).json({message: `sign Out Error: ${error}`});
+    }
+}
