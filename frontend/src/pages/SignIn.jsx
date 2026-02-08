@@ -59,7 +59,7 @@ const SignUp = () => {
                     />
                     <button onClick={()=>{
                         showPassword ? setshowPassword(false) : setshowPassword(true);
-                    }} className='absolute top-3 right-5 cursor-pointer'>{showPassword ? <FaEyeSlash /> : <FaRegEye />}</button>
+                    }} className='absolute top-3 right-5 cursor-pointer'>{showPassword ? <FaRegEye /> : <FaEyeSlash />}</button>
                     </div>
                 </div>
 
