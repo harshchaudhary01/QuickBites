@@ -6,7 +6,7 @@ import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 
 const ForgotPassword = () => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(3);
   const [email, setEmail] = useState("");
   const [OTP, setOTP] = useState("");
   const [newPassword, setNewPassword] = useState("");
