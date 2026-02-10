@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  host: "gmail",
+  service: "Gmail",
   port: 465,
   secure: true, 
   auth: {
@@ -12,13 +12,13 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = async (to, subject, text) => {
+export const sendOtpEmail = async (to, otp) => {
   try {
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: process.env.MAIL_USER,
       to,
-      subject,
-      text,
+      subject: "Reset Your Password",
+      html: `<p>Your OTP for password reset is <b>${otp}</b>. It expires in 5 minutes.</p>`
     });
   } catch (error) {
     console.error("Error sending email:", error);

@@ -1,22 +1,23 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import generateToken from "../utils/token.js";
+import { sendOtpEmail } from "../utils/mail.js";
 
-export const signUp = async (req, res) =>{
+export const signUp = async (req, res) => {
     try {
-        const {fullName, email, password, mobile, role} = req.body;
-        let user = await User.findOne({email});
-        if(user){
-            return res.status(400).json({message: "User already exist."}); // we use "400", bcoz it's the fault of client side user.
+        const { fullName, email, password, mobile, role } = req.body;
+        let user = await User.findOne({ email });
+        if (user) {
+            return res.status(400).json({ message: "User already exist." }); // we use "400", bcoz it's the fault of client side user.
         }
-        if(password.length < 6){
-            return res.status(400).json({message: "Password must be atleast 6 characters long."});
+        if (password.length < 6) {
+            return res.status(400).json({ message: "Password must be atleast 6 characters long." });
         }
-        if(mobile.length < 10){
-            return res.status(400).json({message: "Mobile number must be 10 digits long."});
+        if (mobile.length < 10) {
+            return res.status(400).json({ message: "Mobile number must be 10 digits long." });
         }
 
-        const hashedPassword = await bcrypt.hash(password,10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         user = await User.create({
             fullName,
             email,
@@ -31,7 +32,7 @@ export const signUp = async (req, res) =>{
         res.cookie("token", token, {
             secure: false, // in the dev phase, we use "false" because we only uses "http" & secure means "https"...
             sameSite: "strict", // whenever, we put secure = false, we also put sameSite = "strict"
-            maxAge: 7*24*60*60*1000, // we give the value in millisecond not like "7d"
+            maxAge: 7 * 24 * 60 * 60 * 1000, // we give the value in millisecond not like "7d"
             httpOnly: true,
         })
 
@@ -42,25 +43,24 @@ export const signUp = async (req, res) =>{
     }
 }
 
-
-export const signIn = async (req, res) =>{
+export const signIn = async (req, res) => {
     try {
-        const {email, password} = req.body;
-        const user = await User.findOne({email});
-        if(!user){
-            return res.status(400).json({message: "User doesn't exist."});
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "User doesn't exist." });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if(!isMatch){
-            return res.status(400).json({message: "Incorrect Password!"});
+        if (!isMatch) {
+            return res.status(400).json({ message: "Incorrect Password!" });
         }
 
         const token = await generateToken(user._id);
         res.cookie("token", token, {
             secure: false, // in the dev phase, we use "false" because we only uses "http" & secure means "https"...
             sameSite: "strict", // whenever, we put secure = false, we also put sameSite = "strict"
-            maxAge: 7*24*60*60*1000, // we give the value in millisecond not like "7d"
+            maxAge: 7 * 24 * 60 * 60 * 1000, // we give the value in millisecond not like "7d"
             httpOnly: true,
         })
 
@@ -71,11 +71,71 @@ export const signIn = async (req, res) =>{
     }
 }
 
-export const signOut = async (req, res) =>{
+export const signOut = async (req, res) => {
     try {
         res.clearCookie("token");
-        return res.status(200).json({message: `Logout Successfully!`});
+        return res.status(200).json({ message: `Logout Successfully!` });
     } catch (error) {
-        res.status(500).json({message: `sign Out Error: ${error}`});
+        res.status(500).json({ message: `sign Out Error: ${error}` });
     }
 }
+
+export const sendOtp = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "User doesn't exists." })
+        }
+        const otp = Math.floor(1000 + Math.random() * 9000).toString();
+        user.resetOtp = otp;
+        user.otpExpires = Date.now() + 5 * 60 * 1000;
+        user.isOtpVerified = false;
+        await user.save();
+        await sendOtpEmail(email, otp);
+        return res.status(200).json({ message: "OTP sent successfully!" })
+    } catch (error) {
+        res.status(500).json({ message: `OTP Send Error: ${error}` });
+    }
+}
+
+export const verifyOtp = async (req, res) => {
+    try {
+        const { email, OTP } = req.body;
+        const user = await User.findOne({ email });
+        if (!user || user.resetOtp !== OTP || user.otpExpires < Date.now()) {
+            return res.status(400).json({ message: "Invalid/Expired OTP!" });
+        }
+        user.isOtpVerified = true;
+        user.resetOtp = undefined;
+        user.otpExpires = undefined;
+        await user.save();
+        return res.status(200).json({ message: "OTP verification Successfully!" })
+    } catch (error) {
+        res.status(500).json({ message: `OTP Verification Error: ${error}` });
+    }
+}
+
+export const resetPassword = async (req, res) => {
+    try {
+        const { email, newPassword } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ message: "User doesn't exists." })
+        }
+        if (!user.isOtpVerified) {
+            return res.status(400).json({ message: "OTP verification required." });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        user.isOtpVerified = false;
+
+        await user.save();
+        return res.status(200).json({ message: "Password reset Successfully!" });
+    } catch (error) {
+        res.status(500).json({ message: `Password reset failed: ${error}` });
+    }
+}
+
