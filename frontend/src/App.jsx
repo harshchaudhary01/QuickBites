@@ -4,6 +4,7 @@ import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import LandingPage from './pages/LandingPage'
 import ForgotPassword from './pages/ForgotPassword'
+import OtherPage from './pages/OtherPage'
 
 export const serverUrl = "http://localhost:8000";
 

@@ -139,3 +139,30 @@ export const resetPassword = async (req, res) => {
     }
 }
 
+export const googleAuth = async (req, res) =>{
+    try {
+        const {fullName, email, mobile} = req.body;
+        let user = await User.findOne({email});
+        if(!user){
+            user = await User.create({
+                email,
+                mobile,
+                fullName
+            })
+        }
+
+        const token = await generateToken(user._id);
+        res.cookie("token", token, {
+            secure: false, // in the dev phase, we use "false" because we only uses "http" & secure means "https"...
+            sameSite: "strict", // whenever, we put secure = false, we also put sameSite = "strict"
+            maxAge: 7 * 24 * 60 * 60 * 1000, // we give the value in millisecond not like "7d"
+            httpOnly: true,
+        })
+
+        return res.status(200).json(user);
+
+    } catch (error) {
+        res.status(500).json({message: `Error found at googleAuth: ${error}`});
+    }
+    
+}

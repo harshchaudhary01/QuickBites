@@ -34,6 +34,6 @@ const userSchema = new mongoose.Schema({
     }
 },{timestamps: true})
 
-const User = mongoose.model("User",userSchema)
-
+const User = mongoose.model("User",userSchema) // it will automatically make the model starting letter "capital"
+// const User = mongoose.model("What name we give to the model", schema_name that we made);
 export default User;

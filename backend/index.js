@@ -13,9 +13,10 @@ app.use(cors({
     credentials: true
 }));
 
+// "use" is use for the global change, it means it globally
 app.use(express.json());
 app.use(cookieParser());
-app.use("/api/auth",authRouter);
+app.use("/api/auth",authRouter); // we want that every routes in the authRouter passes through "/api/auth"
 
 app.listen(port, ()=>{
     connectDB();

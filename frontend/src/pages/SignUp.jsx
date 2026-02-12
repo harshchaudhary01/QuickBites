@@ -6,6 +6,10 @@ import { useState } from 'react';
 import axios from 'axios';
 import { serverUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '../../firebase';
+
+import { ClipLoader } from "react-spinners";
 
 const SignUp = () => {
     const primaryColor = "#ff4d2d";
@@ -21,16 +25,50 @@ const SignUp = () => {
     const [mobile, setMobile] = useState("");
     const [password, setPassword] = useState("");
 
+    const [err, setErr] = useState("");
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const handleSignUp = async ()=>{
         try {
+            setLoading(true);
             const result = await axios.post(`${serverUrl}/api/auth/signup`,{
                 fullName, email, password, role, mobile
             },{withCredentials: true})
+            setErr("");
             console.log(result)
+            setLoading(false);
         } catch (error) {
+            setErr(error.response?.data?.message || "Something went wrong");
             console.log(error)
+            setLoading(false);
+        }
+    }
+
+    const handleGoogleAuth = async () =>{
+        setLoading(true);
+        try {
+            if(!mobile){
+                setLoading(false);
+                return setErr("Mobile Field Required!");
+            }
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
+            console.log(result);
+            const {data} = await axios.post(`${serverUrl}/api/auth/google-auth`, {
+                fullName: result.user.displayName,
+                email: result.user.email,
+                role,
+                mobile
+            },{withCredentials: true})
+            setErr("");
+            console.log(data)
+            setLoading(false);
+        } catch (error) {
+            setErr(error.response?.data?.message || "Something went wrong");
+            console.log(`Handle Google Auth Function error ${error}`);
+            setLoading(false);
         }
     }
 
@@ -42,9 +80,9 @@ const SignUp = () => {
 
                 {/* Full Name */}
                 <div className='mb-4'>
-                    <label htmlFor="fullName" className='block text-gray-700 font-medium mb-1'>Full Name</label>
+                    <label htmlFor="fullName" className='block text-gray-700 font-medium mb-1' >Full Name</label>
                     <input type="text" className='w-full border rounded-lg px-3 py-2 focus:outline-orange-500' placeholder='Enter your Full Name'
-                    style={{border: `1px solid ${borderColor}`}}
+                    style={{border: `1px solid ${borderColor}`}} required
                     onChange={(e)=>{setFullName(e.target.value)}} value={fullName}
                     />
                 </div>
@@ -53,7 +91,7 @@ const SignUp = () => {
                 <div className='mb-4'>
                     <label htmlFor="Email" className='block text-gray-700 font-medium mb-1'>Email</label>
                     <input type="email" className='w-full border rounded-lg px-3 py-2 focus:outline-orange-500' placeholder='Enter your Email'
-                    style={{border: `1px solid ${borderColor}`}}
+                    style={{border: `1px solid ${borderColor}`}} required
                     onChange={(e)=>{setEmail(e.target.value)}} value={email}
                     />
                 </div>
@@ -62,7 +100,7 @@ const SignUp = () => {
                 <div className='mb-4'>
                     <label htmlFor="mobile" className='block text-gray-700 font-medium mb-1'>Mobile Number</label>
                     <input type="tel" className='w-full border rounded-lg px-3 py-2 focus:outline-orange-500' placeholder='Enter your Mobile Number'
-                    style={{border: `1px solid ${borderColor}`}}
+                    style={{border: `1px solid ${borderColor}`}} required
                     onChange={(e)=>{setMobile(e.target.value)}} value={mobile}
                     />
                 </div>
@@ -72,12 +110,10 @@ const SignUp = () => {
                     <label htmlFor="password" className='block text-gray-700 font-medium mb-1'>Password</label>
                     <div className='relative'>
                         <input type={`${showPassword ? "text":"password"}`} className='w-full border rounded-lg px-3 py-2 focus:outline-orange-500' placeholder='Enter your Password'
-                    style={{border: `1px solid ${borderColor}`}}
+                    style={{border: `1px solid ${borderColor}`}} required
                     onChange={(e)=>{setPassword(e.target.value)}} value={password}
                     />
-                    <button onClick={()=>{
-                        showPassword ? setshowPassword(false) : setshowPassword(true);
-                    }} className='absolute top-3 right-5 cursor-pointer'>{showPassword ? <FaRegEye /> : <FaEyeSlash />}</button>
+                    <button onClick={() => setshowPassword(!showPassword)} className='absolute top-3 right-5 cursor-pointer'>{showPassword ? <FaRegEye /> : <FaEyeSlash />}</button>
                     </div>
                 </div>
 
@@ -101,12 +137,15 @@ const SignUp = () => {
                 </div>
 
                 {/* SignUp Button */}
-                <button onClick={handleSignUp} className='w-full cursor-pointer font-semibold py-2 rounded-lg transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] hover:scale-95'>
-                    Sign Up
+                <button disabled= {loading} onClick={handleSignUp} className='w-full cursor-pointer font-semibold py-2 rounded-lg transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] hover:scale-95'>
+                    {loading ? <ClipLoader size={20} color='white' /> : "Sign Up"}
                 </button>
-                <button className='flex gap-2 cursor-pointer w-full mt-4 items-center justify-center border rounded-lg px-4 py-2 transition duration-200 border-gray-400 hover:bg-gray-100'>
+                {err && <p className='text-red-500 text-center'>*{err}</p>}
+                <button disabled= {loading}  onClick={handleGoogleAuth} className='flex gap-2 cursor-pointer w-full mt-4 items-center justify-center border rounded-lg px-4 py-2 transition duration-200 border-gray-400 hover:bg-gray-100'>
+                    {loading ? <ClipLoader size={20} color='white' /> : <>
                     <FcGoogle size={25} />
                     <span>Continue with Google</span>
+                    </>}
                 </button>
                 <p className='text-center mt-5'>Already have an account ? <span onClick={()=>{navigate("/signin")}} className='text-[#ff4d2d] cursor-pointer '>Sign In</span></p>
             </div>
