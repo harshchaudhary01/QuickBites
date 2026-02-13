@@ -17,3 +17,5 @@ const isAuth = async (req, res, next) => {
         res.status(500).json({message: `auth middleware error: ${error}`});
     }
 }
+
+export default isAuth;
