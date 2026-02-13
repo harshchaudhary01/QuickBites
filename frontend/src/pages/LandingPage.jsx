@@ -2,22 +2,25 @@ import React from 'react'
 import Cards from '../components/cards'
 
 import { useNavigate } from 'react-router-dom';
+import OtherPage from './OtherPage';
+import MenuSection from './MenuSection';
+import Footer from './Footer';
 
 
 const LandingPage = () => {
   const navigate = useNavigate();
   return (
-    <div className='relative h-screen w-full'>
+    <div className='h-screen w-full'>
       {/* navbar */}
-      <div className='fixed top-0 left-0 h-15 rounded-b-full w-full bg-[#FF7F11] z-10 flex items-center justify-between px-20'>
+      <div className='fixed top-0 left-0 h-12 w-full bg-opacity-10 backdrop-blur-lg p-4 z-10 flex items-center justify-between px-20'>
         <div>
-          <h2 className='text-3xl font-extrabold font-sans'>QuickBites</h2>
+          <h2 className='text-3xl font-extrabold font-sans'>Quick<span className='text-orange-600'>Bites</span></h2>
         </div>
 
-        <div className='flex items-center justify-center gap-20 font-medium'>
-          <p>Home</p>
-          <p>Restaurants</p>
-          <p>Contact</p>
+        <div className='flex items-center justify-center gap-20 font-medium bg-orange-600 px-10 py-2 rounded-2xl'>
+          <p className='text-white'>Home</p>
+          <p className='text-white'>Restaurants</p>
+          <p className='text-white'>Contact</p>
         </div>
 
         <div>
@@ -25,18 +28,22 @@ const LandingPage = () => {
         </div>
       </div>
 
-      <div className='curved-edge pt-30 px-18 h-[118vh] border-0 w-full bg-cover bg-center'>
-        <h1 className='text-[6vw] leading-tight font-extrabold text-black'>We Serve <br /> The Taste <br /> You Love 😋</h1>
-        <p className='text-black'>Because a hungry man will always be an angry man.</p>
-        <div className='flex gap-5 '>
-          <button className='text-black border px-4 py-2 border-dashed border-black'>Let’s Explore</button>
-          <button className='text-black border px-4 py-2 border-dashed border-black'>Order Now</button>
-        </div>
-      </div>
+      <OtherPage />
+
       <div className='w-full'>
+        <MenuSection />
+      </div>
+      
+
+      <div className='w-full flex items-center justify-between px-30 py-10'>
+        <h1 className='text-4xl text-center'>When it comes to making your day <br /><span  className='text-red-500 font-medium'>Nothing gets in our way!</span></h1>
+        <img className='border-b-2 border-gray-400' src="scooter-person.png" alt="" />
+      </div>
+
+<div className='w-full'>
         <h1 className='text-center text-3xl font-bold uppercase'>Save More as you order</h1>
 
-        <div className="w-full px-20 py-10 mt-5 flex items-center gap-10 overflow-x-auto flex-nowrap ">
+        <div className="w-full px-20 py-5 mt-5 flex items-center gap-10 overflow-x-auto flex-nowrap ">
           <Cards img={"slider-images/75Off.jpg"} />
           <Cards img={"slider-images/99.jpg"} />
           <Cards img={"slider-images/burger.jpg"} />
@@ -52,15 +59,8 @@ const LandingPage = () => {
         </div>
 
       </div>
-
-      <div className='w-full flex items-center justify-between px-30 py-10'>
-        <h1 className='text-4xl text-center'>When it comes to making your day <br /><span  className='text-red-500 font-medium'>Nothing gets in our way!</span></h1>
-        <img className='border-b-2 border-gray-400' src="scooter-person.png" alt="" />
-      </div>
-
-      <div className='w-full h-screen bg-amber-200'>
-
-      </div>
+      
+      <Footer />
 
     </div>
   )
