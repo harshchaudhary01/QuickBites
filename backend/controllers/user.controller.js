@@ -1,9 +1,9 @@
-import User from "../models/user.model";
+import User from "../models/user.model.js";
 
 
 const getCurrentUser = async (req,res) =>{
     try {
-        const userId = await req.userId;
+        const userId = req.userId;
         if(!userId){
             return res.status(400).json({message: `userId not found!`})
         }

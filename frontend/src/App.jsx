@@ -5,10 +5,12 @@ import SignIn from './pages/SignIn'
 import LandingPage from './pages/LandingPage'
 import ForgotPassword from './pages/ForgotPassword'
 import OtherPage from './pages/OtherPage'
+import useGetCurrentUser from './hooks/useGetCurrentUser'
 
 export const serverUrl = "http://localhost:8000";
 
 const App = () => {
+  useGetCurrentUser();
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
