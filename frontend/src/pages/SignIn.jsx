@@ -8,6 +8,10 @@ import { serverUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
 
 import { ClipLoader } from "react-spinners";
+import { useDispatch } from 'react-redux';
+import { setUserData } from '../redux/userSlice';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '../../firebase';
 
 const SignUp = () => {
     const primaryColor = "#ff4d2d";
@@ -27,6 +31,7 @@ const SignUp = () => {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleSignIn = async ()=>{
         try {
@@ -34,13 +39,26 @@ const SignUp = () => {
             const result = await axios.post(`${serverUrl}/api/auth/signin`,{
                 email, password
             },{withCredentials: true})
-            console.log(result)
+            // console.log(result)
+            dispatch(setUserData(result.data));
             setErr("");
             setLoading(false);
         } catch (error) {
-            setErr(error.response?.data?.message || "Something went wrong");
+            setErr(error?.response?.data?.message || "Something went wrong");
             console.log(error)
             setLoading(false);
+        }
+    }
+
+    const handleGoogleAuth = async () =>{
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        try {
+            const {data} = await axios.post(`${serverUrl}/api/auth/google-auth`,{email: result.user.email,},{withCredentials: true})
+            // console.log(data);
+            dispatch(setUserData(data));
+        } catch (error) {
+            console.log(error)
         }
     }
 
