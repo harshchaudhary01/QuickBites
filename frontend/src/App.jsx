@@ -8,11 +8,13 @@ import OtherPage from './pages/OtherPage'
 import useGetCurrentUser from './hooks/useGetCurrentUser'
 import UserDashboard from './components/UserDashboard'
 import { useSelector } from 'react-redux'
+import useGetCity from './hooks/useGetCity'
 
 export const serverUrl = "http://localhost:5000";
 
 const App = () => {
   useGetCurrentUser();
+  useGetCity();
   const {userData, isLoading} = useSelector(state => state.user);
   
   if (isLoading) {
