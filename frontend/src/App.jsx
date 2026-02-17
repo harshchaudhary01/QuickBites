@@ -9,7 +9,7 @@ import useGetCurrentUser from './hooks/useGetCurrentUser'
 import UserDashboard from './components/UserDashboard'
 import { useSelector } from 'react-redux'
 
-export const serverUrl = "http://localhost:8000";
+export const serverUrl = "http://localhost:5000";
 
 const App = () => {
   useGetCurrentUser();

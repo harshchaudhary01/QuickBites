@@ -13,7 +13,7 @@ import { setUserData } from '../redux/userSlice';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../../firebase';
 
-const SignUp = () => {
+const SignIn = () => {
     const primaryColor = "#ff4d2d";
     const hoverColor = "#e64323";
     const bgColor = "#fff9f6";
@@ -51,14 +51,22 @@ const SignUp = () => {
     }
 
     const handleGoogleAuth = async () =>{
-        const provider = new GoogleAuthProvider();
-        const result = await signInWithPopup(auth, provider);
         try {
-            const {data} = await axios.post(`${serverUrl}/api/auth/google-auth`,{email: result.user.email,},{withCredentials: true})
-            // console.log(data);
+            setLoading(true);
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
+            const {data} = await axios.post(`${serverUrl}/api/auth/google-auth`,{
+                fullName: result.user.displayName,
+                email: result.user.email,
+                role
+            },{withCredentials: true})
             dispatch(setUserData(data));
+            setErr("");
+            setLoading(false);
         } catch (error) {
+            setErr(error?.response?.data?.message || "Something went wrong");
             console.log(error)
+            setLoading(false);
         }
     }
 
@@ -99,9 +107,11 @@ const SignUp = () => {
                     {loading ? <ClipLoader size={20} color='white' /> : "Sign In"}
                 </button>
                 {err && <p className='text-red-500 text-center'>*{err}</p>}
-                <button className='flex gap-2 cursor-pointer w-full mt-4 items-center justify-center border rounded-lg px-4 py-2 transition duration-200 border-gray-400 hover:bg-gray-100'>
-                    <FcGoogle size={25} />
-                    <span>Continue with Google</span>
+                <button disabled={loading} onClick={handleGoogleAuth} className='flex gap-2 cursor-pointer w-full mt-4 items-center justify-center border rounded-lg px-4 py-2 transition duration-200 border-gray-400 hover:bg-gray-100'>
+                    {loading ? <ClipLoader size={20} color='white' /> : <>
+                        <FcGoogle size={25} />
+                        <span>Continue with Google</span>
+                    </>}
                 </button>
                 <p className='text-center mt-5'>Want to create a new account ? <span onClick={()=>{navigate("/signup")}} className='text-[#ff4d2d] cursor-pointer '>Sign Up</span></p>
             </div>
@@ -109,4 +119,4 @@ const SignUp = () => {
     )
 }
 
-export default SignUp;
+export default SignIn;

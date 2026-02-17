@@ -9,8 +9,12 @@ import userRouter from "./routes/user.routes.js";
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Allow the frontend origin dynamically during development. `origin: true`
+// reflects the request origin in `Access-Control-Allow-Origin`, which
+// works with `credentials: true` for dev setups (Vite may use 5173 or 5174).
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    // origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: (origin, callback) => callback(null, true),
     credentials: true
 }));
 
