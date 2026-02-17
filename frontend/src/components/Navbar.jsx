@@ -26,10 +26,10 @@ const Navbar = () => {
             <div className="fixed top-0 w-full h-20 flex items-center justify-between md:justify-center gap-7.5 px-5 py-4 backdrop-blur-lg bg-[#fff9f6] overflow-visible z-50">
 
                 {showSearch && (
-                    <div className="w-[90%] h-[70px] gap-[20px] flex fixed top-[80px] left-[5%] bg-white shadow-xl rounded-lg items-center">
+                    <div className="w-[90%] h-[70px] gap-[20px] flex fixed top-[80px] left-[5%] bg-white shadow-xl rounded-lg items-center md:hidden">
 
                         {/* Location Section */}
-                        <div className="flex items-center w-[30%] overflow-hidden gap-[10px] px-[10px] border-r-[2px] border-gray-400">
+                        <div className="flex items-center w-[30%] overflow-hidden gap-[10px] px-[10px] border-r-[2px] border-gray-400 ">
                             <FaLocationDot size={25} className="text-gray-600" />
                             <div className="w-[80%] truncate">
                                 {city}
