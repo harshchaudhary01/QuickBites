@@ -1,7 +1,6 @@
 import mongoose  from "mongoose";
 
 const itemSchema = new mongoose.Schema({
-
     name: {
         type: String,
         required: true
@@ -29,7 +28,6 @@ const itemSchema = new mongoose.Schema({
         enum: ["veg","non veg"],
         required: true
     }
-
 },{timestamps: true})
 
 const Item = mongoose.model("Item",itemSchema);
