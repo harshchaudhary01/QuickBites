@@ -34,10 +34,10 @@ const Navbar = () => {
             <div className="fixed top-0 w-full h-20 flex items-center justify-between md:justify-center gap-7.5 px-5 py-4 backdrop-blur-lg bg-[#fff9f6] overflow-visible z-50">
 
                 {showSearch && userData.role == "user" && (
-                    <div className="w-[90%] h-[70px] gap-[20px] flex fixed top-[80px] left-[5%] bg-white shadow-xl rounded-lg items-center md:hidden">
+                    <div className="w-[90%] h-17.5 gap-5 flex fixed top-20 left-[5%] bg-white shadow-xl rounded-lg items-center md:hidden">
 
                         {/* Location Section */}
-                        <div className="flex items-center w-[30%] overflow-hidden gap-[10px] px-[10px] border-r-[2px] border-gray-400 ">
+                        <div className="flex items-center w-[30%] overflow-hidden gap-2.5 px-2.5 border-r-2 border-gray-400 ">
                             <FaLocationDot size={25} className="text-gray-600" />
                             <div className="w-[80%] truncate">
                                 {currentCity}
@@ -45,12 +45,12 @@ const Navbar = () => {
                         </div>
 
                         {/* Search Section */}
-                        <div className="w-[70%] flex items-center gap-[10px] px-[10px]">
+                        <div className="w-[70%] flex items-center gap-2.5 px-2.5">
                             <IoIosSearch size={25} className="text-[#ff4d2d]" />
                             <input
                                 type="text"
                                 placeholder="search delicious food ..."
-                                className="px-[10px] text-gray-700 outline-none w-full"
+                                className="px-2.5 text-gray-700 outline-none w-full"
                             />
                         </div>
                     </div>
@@ -90,11 +90,11 @@ const Navbar = () => {
                         <div className='hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium'>
                             <TbReceiptRupee size={20} />
                             <span>My Orders</span>
-                            <span className='absolute -right-2 -top-2 text-xs font-bold text-white bg-[#ff2d4d] rounded-full px-[6px] py-[1px]'>0</span>
+                            <span className='absolute -right-2 -top-2 text-xs font-bold text-white bg-[#ff2d4d] rounded-full px-1.5 py-px'>0</span>
                         </div>
                         <div className='md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium'>
                             <TbReceiptRupee size={20} />
-                            <span className='absolute -right-2 -top-2 text-xs font-bold text-white bg-[#ff2d4d] rounded-full px-[6px] py-[1px]'>0</span>
+                            <span className='absolute -right-2 -top-2 text-xs font-bold text-white bg-[#ff2d4d] rounded-full px-1.5 py-px'>0</span>
                         </div>
                     </> : <>
                         {/* Cart */}

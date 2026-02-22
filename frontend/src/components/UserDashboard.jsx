@@ -62,7 +62,7 @@ useEffect(()=>{
     <div className="min-h-screen w-screen flex flex-col gap-5 items-center overflow-y-auto bg-[#fff9f6]">
       <Navbar />  
 
-      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-[10px]">
+      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
         <h1 className="text-gray-800 text-2xl sm:text-3xl">Inspiration for your first Order.</h1>
         <div className="w-full relative">
           {leftBtn && <button onClick={()=>scrollHandler(catScrollRef,"left")} className="absolute left-0 top-1/2 -translate-y-1/2 bg-[#ff4d2d] text-white p-2 rounded-full shadow-lg hover:bg-[#e64528] z-10">
@@ -77,7 +77,7 @@ useEffect(()=>{
         </div>
       </div>
 
-      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-[10px]">
+      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
          <h1 className="text-gray-800 text-2xl sm:text-3xl">Best Shops in {currentCity}</h1>
          <div className="w-full relative">
           {leftShopBtn && <button onClick={()=>scrollHandler(shopScrollRef,"left")} className="absolute left-0 top-1/2 -translate-y-1/2 bg-[#ff4d2d] text-white p-2 rounded-full shadow-lg hover:bg-[#e64528] z-10">
@@ -92,7 +92,7 @@ useEffect(()=>{
         </div>
       </div>
 
-      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-[10px]">
+      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
         <h1 className="text-gray-800 text-2xl sm:text-3xl">Suggested Food Items</h1>
 
         <div className="w-full h-auto flex flex-wrap gap-5 justify-center">
