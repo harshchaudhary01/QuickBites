@@ -1,4 +1,15 @@
 @import "tailwindcss";
+
+*{
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar{
+  display: none;
+}
+
 body{
     background: #FFF9F6;
 }
@@ -12,3 +23,4 @@ body{
   aspect-ratio: 3/2;
   mask: radial-gradient(60% var(--c) at bottom,#0000 calc(100% - 2px),#000);
 }
+
