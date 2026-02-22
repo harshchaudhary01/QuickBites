@@ -10,7 +10,6 @@ const Footer = () => {
         className="absolute top-15 right-10 w-105 z-20 drop-shadow-2xl"
         alt=""
       />
-
     </div>
   )
 }

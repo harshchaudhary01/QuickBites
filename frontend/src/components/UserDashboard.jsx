@@ -2,14 +2,13 @@ import React from "react";
 import { TiShoppingCart } from "react-icons/ti";
 import { IoStar } from "react-icons/io5";
 import RestaurantCard from "./RestaurantCard";
-
 import { PiSlidersHorizontal } from "react-icons/pi";
-
 import Navbar from "./Navbar";
+
 const UserDashboard = () => {
   return (
-    <div className="min-h-screen bg-[#fff9f6]">
-      <Navbar />
+    <div className="min-h-screen w-full bg-[#fff9f6]">
+      <Navbar />  
       <div className="max-w-6xl mx-auto pt-24 px-6">
         <h2 className="text-3xl" >Restaurants in Phagwara</h2>
       </div>
@@ -42,5 +41,4 @@ const UserDashboard = () => {
     </div>
   );
 };
-
 export default UserDashboard;

@@ -6,6 +6,8 @@ import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/authRoute.js"
 import userRouter from "./routes/user.routes.js";
+import shopRouter from "./routes/shop.routes.js";
+import itemRouter from "./routes/item.routes.js";
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -21,8 +23,12 @@ app.use(cors({
 // "use" is use for the global change, it means it globally
 app.use(express.json());
 app.use(cookieParser());
+
 app.use("/api/auth",authRouter); // we want that every routes in the authRouter passes through "/api/auth"
 app.use("/api/user",userRouter); // we want that every routes in the authRouter passes through "/api/user"
+
+app.use("/api/shop",shopRouter);
+app.use("/api/item", itemRouter);
 
 app.listen(port, ()=>{
     connectDB();
