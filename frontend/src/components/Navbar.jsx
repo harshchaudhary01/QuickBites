@@ -15,7 +15,7 @@ const Navbar = () => {
 
     const navigate = useNavigate();
 
-    const { userData, currentCity } = useSelector(state => state.user);
+    const { userData, currentCity, cartItems } = useSelector(state => state.user);
     const { myShopData } = useSelector(state => state.owner);
 
     const [showInfo, setShowInfo] = useState(false);
@@ -98,9 +98,9 @@ const Navbar = () => {
                         </div>
                     </> : <>
                         {/* Cart */}
-                    <button className="relative cursor-pointer">
+                    <button onClick={()=>navigate("/cart")} className="relative cursor-pointer">
                         <TiShoppingCart size={30} md:size={25} className='text-[#ff4d2d]' />
-                        <span className='absolute -right-2.25 -top-3 text-[#ff4d2d] text-lg'>0</span>
+                        <span className='absolute -right-2.25 -top-3 text-[#ff4d2d] text-lg'>{cartItems.length}</span>
                     </button>
 
                     {/* My Order */}

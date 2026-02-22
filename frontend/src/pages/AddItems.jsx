@@ -70,7 +70,7 @@ const AddItems = () => {
         <form className='space-y-5' onSubmit={handleSubmit}>
           <div>
             <label className='block text-sm font-medium text-gray-700 mb-1'>Name</label>
-            <input onChange={(e)=>setName(e.target.value)} value={name} placeholder='Enter shop name' type="text" className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500' />
+            <input onChange={(e)=>setName(e.target.value)} value={name} placeholder='Enter food name' type="text" className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500' />
           </div>
           <div>
             <label className='block text-sm font-medium text-gray-700 mb-1'>Add Food Image</label>
