@@ -12,6 +12,7 @@ import { setAddress, setLocation } from '../redux/mapSlice';
 import axios from 'axios';
 import { FaMobileScreenButton } from 'react-icons/fa6';
 import { FaCreditCard } from 'react-icons/fa';
+import { serverUrl } from '../App';
 
 function RecenterMap({ location }) {
     const map = useMap();
@@ -73,6 +74,24 @@ const CheckOut = () => {
             // console.log(result)
             const {lat,lon} = result.data.features[0].properties
             dispatch(setLocation({lat,lon}))
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handlePlaceOrder = async ()=>{
+        try {
+            const result = axios.post(`${serverUrl}/api/order/place-order`,{
+                paymentMethod,
+                deliveryAddress:{
+                    text: addressInput,
+                    latitude: location.lat,
+                    longitude: location.lon
+                },
+                totalAmount,
+                cartItems
+            },{withCredentials: true})
+            console.log(result.data)
         } catch (error) {
             console.log(error)
         }
@@ -160,7 +179,7 @@ const CheckOut = () => {
                         </div>
                     </div>
                 </section>
-                <button className='w-full bg-[#ff4d2d] hover:bg-[#e64526] text-white py-3 rounded-xl font-semibold'>{paymentMethod==="cod" ? "Place Order" : "Pay & Place Order"}</button>
+                <button onClick={handlePlaceOrder} className='w-full bg-[#ff4d2d] hover:bg-[#e64526] text-white py-3 rounded-xl font-semibold'>{paymentMethod==="cod" ? "Place Order" : "Pay & Place Order"}</button>
             </div>
         </div>
     )
