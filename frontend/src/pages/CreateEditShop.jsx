@@ -6,9 +6,10 @@ import { FaUtensils } from "react-icons/fa";
 import axios from 'axios';
 import { serverUrl } from '../App';
 import { setMyShopData } from '../redux/ownerSlice';
+import { ClipLoader } from 'react-spinners';
 const CreateEditShop = () => {
   const navigate = useNavigate();
-
+  
   const { myShopData } = useSelector(state => state.owner);
   const dispatch = useDispatch();
 
