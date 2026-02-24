@@ -4,17 +4,17 @@ import Shop from "../models/shop.model.js"
 export const placeOrder = async (req,res)=>{
     try {
         const {cartItems, paymentMethod, deliveryAddress, totalAmount} = req.body;
-        if(cartItems.length == 0 || !cartItems){
-            res.status(400).json({message: "Cart is empty"})
+        if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
+            return res.status(400).json({ message: "Cart is empty" });
         }
         if(!deliveryAddress.text || !deliveryAddress.latitude || !deliveryAddress.longitude){
-            res.status(400).json({message: "Send Complete Delivery Address"})
+            return res.status(400).json({message: "Send Complete Delivery Address"})
         }
 
         const groupItemsByShop = {};
         
         cartItems.forEach(item => {
-            const shopId = item.shopId;
+            const shopId = item.shopId || item.shop;
             if(!groupItemsByShop[shopId]){
                 groupItemsByShop[shopId] = [];
             }
