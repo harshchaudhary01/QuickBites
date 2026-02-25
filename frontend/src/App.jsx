@@ -19,6 +19,7 @@ import CartPage from './pages/CartPage'
 import CheckOut from './pages/CheckOut'
 import OrderPlaced from './pages/OrderPlaced'
 import MyOrders from './pages/MyOrders'
+import useGetMyOrders from './hooks/useGetMyOrders'
 
 export const serverUrl = "http://localhost:5000";
 
@@ -28,6 +29,7 @@ const App = () => {
   useGetMyShop();
   useGetShopByCity();
   useGetItemsByCity();
+  useGetMyOrders();
   const {userData, isLoading} = useSelector(state => state.user);
   
   if (isLoading) {
