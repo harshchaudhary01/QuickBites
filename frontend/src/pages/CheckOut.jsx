@@ -13,6 +13,7 @@ import axios from 'axios';
 import { FaMobileScreenButton } from 'react-icons/fa6';
 import { FaCreditCard } from 'react-icons/fa';
 import { serverUrl } from '../App';
+import { addMyOrder } from '../redux/userSlice';
 
 function RecenterMap({ location }) {
     const map = useMap();
@@ -91,7 +92,8 @@ const CheckOut = () => {
                 totalAmount,
                 cartItems
             }, { withCredentials: true });
-            console.log(result.data);
+            dispatch(addMyOrder(result.data));
+            // console.log(result.data);
             navigate("/order-placed");
         } catch (error) {
             console.log(error)
