@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
     location: { // this is known as GeoJsonFormat, in this we store the geolocation type data
         type:{
             type: String,
-            enum: [Point],
+            enum: ['Point'],
             default: 'Point'
         },
         coordinates:{
