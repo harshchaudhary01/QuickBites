@@ -158,7 +158,7 @@ export const updateOrderStatus = async (req,res)=>{
                 order: order._id,
                 shop:shopOrder.shop,
                 shopOrderId: shopOrder._id,
-                broadcastedTo: candidates,
+                brodcastedTo: candidates,
                 status: "brodcasted"
             })
 
@@ -174,13 +174,15 @@ export const updateOrderStatus = async (req,res)=>{
             }))
         }
 
-        await shopOrder.save();
+        //todo don't know what is the error, i have to remove this line
+        // await shopOrder.save();
         await order.save();
         
         const updatedShopOrder = order.shopOrders.find(o=>o.shop==shopId)
 
-        await shopOrder.populate("ShopOrders.shop","name")
-        await shopOrder.populate("ShopOrders.assignedDeliveryBoy","fullName email mobile")
+        //todo don't know what is the error, i have to remove this line
+        // await shopOrder.populate("ShopOrders.shop","name")
+        // await shopOrder.populate("ShopOrders.assignedDeliveryBoy","fullName email mobile")
 
 
         // await shopOrder.populate("shopOrderItems.item","name image price")

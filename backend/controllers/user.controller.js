@@ -21,7 +21,7 @@ export const getCurrentUser = async (req,res) =>{
 export const updateUserLocation = async (req,res)=>{
     try {
         const {lat, lon} = req.body;
-        const user = await findByIdAndUpdate(req.userId,{
+        const user = await User.findByIdAndUpdate(req.userId,{
             location: {
                 type: 'Point',
                 coordinates: [lon,lat] // make the order doesn't change, means latitude is after the longitude...
