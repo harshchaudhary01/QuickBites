@@ -31,8 +31,21 @@ const userSchema = new mongoose.Schema({
     },
     otpExpires: {
         type: Date
+    },
+    location: { // this is known as GeoJsonFormat, in this we store the geolocation type data
+        type:{
+            type: String,
+            enum: [Point],
+            default: 'Point'
+        },
+        coordinates:{
+            type:[Number],
+            default: [0,0]
+        }
     }
 },{timestamps: true})
+
+userSchema.index({location: '2dsphere'}) // we have to tell mongodb, that this is a location field, you have to treat it like this only, because when ever we are calculating distance between users we can easily calculate
 
 const User = mongoose.model("User",userSchema) // it will automatically make the model starting letter "capital"
 // const User = mongoose.model("What name we give to the model", schema_name that we made);

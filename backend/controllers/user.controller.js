@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 
 
-const getCurrentUser = async (req,res) =>{
+export const getCurrentUser = async (req,res) =>{
     try {
         const userId = req.userId;
         if(!userId){
@@ -17,4 +17,21 @@ const getCurrentUser = async (req,res) =>{
         return res.status(500).json({message: `getCurrentUser error: ${error}`});
     }
 }
-export default getCurrentUser;
+
+export const updateUserLocation = async (req,res)=>{
+    try {
+        const {lat, lon} = req.body;
+        const user = await findByIdAndUpdate(req.userId,{
+            location: {
+                type: 'Point',
+                coordinates: [lon,lat] // make the order doesn't change, means latitude is after the longitude...
+            }
+        },{new:true})
+        if(!user){
+            return res.status(400).json({message: "User not found!"});
+        }
+        return res.status(200).json({message: "User Location updated successfully!"});
+    } catch (error) {
+        return res.status(500).json({message: `updateUserLocation error: ${error}`});
+    }
+}

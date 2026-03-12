@@ -20,11 +20,13 @@ import CheckOut from './pages/CheckOut'
 import OrderPlaced from './pages/OrderPlaced'
 import MyOrders from './pages/MyOrders'
 import useGetMyOrders from './hooks/useGetMyOrders'
+import useUpdateLocation from './hooks/useUpdateLocation'
 
 export const serverUrl = "http://localhost:5000";
 
 const App = () => {
   useGetCurrentUser();
+  useUpdateLocation();
   useGetCity();
   useGetMyShop();
   useGetShopByCity();
