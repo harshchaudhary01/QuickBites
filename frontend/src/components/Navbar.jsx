@@ -98,10 +98,10 @@ const Navbar = () => {
                         </div>
                     </> : <>
                         {/* Cart */}
-                    <button onClick={()=>navigate("/cart")} className="relative cursor-pointer">
+                    {userData.role == "user" && <button onClick={()=>navigate("/cart")} className="relative cursor-pointer">
                         <TiShoppingCart size={30} md:size={25} className='text-[#ff4d2d]' />
                         <span className='absolute -right-2.25 -top-3 text-[#ff4d2d] text-lg'>{cartItems.length}</span>
-                    </button>
+                    </button>}
 
                     {/* My Order */}
                     <button onClick={()=>navigate("/my-orders")} className='hidden md:block px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-sm font-medium text-[#ff4d2d]'>
@@ -117,7 +117,7 @@ const Navbar = () => {
                         {userData?.fullName ? userData.fullName.slice(0, 1) : 'G'}
                     </button>
 
-                    {showInfo && <div className='fixed top-20 right-2.5 md:right-[10%] 1g:right-[25%] w-45 shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 bg-white'>
+                    {showInfo && <div className={`fixed top-20 right-2.5 ${userData.role == "deliveryBoy" ? "md:right-[20%] lg:right-[35%]" : "md:right-[10%] lg:right-[25%]"} w-45 shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 bg-white`}>
                         <div className='text-sm text-orange-600 font-bold '>{userData?.fullName ? userData?.fullName : "Guest"}</div>
                         {userData?.role === "user" && <div onClick={()=>navigate("/my-orders")} className='md:hidden hover:border-b-2 w-fit border-orange-500  text-sm font-semibold '>My Orders</div>}
                         <div onClick={handleLogOut} className='text-sm cursor-pointer hover:border-b-2 w-fit border-orange-500  font-semibold '>Log Out</div>
