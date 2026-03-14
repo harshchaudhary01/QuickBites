@@ -117,25 +117,37 @@ export const updateOrderStatus = async (req,res)=>{
         const {status} = req.body
 
         const order = await Order.findById(orderId);
-        const shopOrder = order.shopOrders.find(o=>o.shop== shopId)
-        if(!shopOrder){
-            return res.status(400).json({message: "Shop Order not found"})
+        const shopOrder = order.shopOrders.find(o => o.shop == shopId);
+        if (!shopOrder) {
+            return res.status(400).json({ message: "Shop Order not found" });
         }
-        shopOrder.status = status
+
+        // Prevent re-broadcasting when the same status is re-sent.
+        if (shopOrder.status === status) {
+            return res.status(200).json({
+                shopOrder,
+                assignedDeliveryBoy: shopOrder.assignedDeliveryBoy,
+                availableBoys: [],
+                assignment: shopOrder.assignment
+            });
+        }
+
+        shopOrder.status = status;
 
         let deliveryBoyPayload = [];
+        const shouldBroadcast = status === "out of delivery" && !shopOrder.assignment;
 
-        if(status == "out of delivery" || !shopOrder.assignment){
-            const {longitude, latitude} = order.deliveryAddress
+        if (shouldBroadcast) {
+            const { longitude, latitude } = order.deliveryAddress;
             const nearByDeliveryBoys = await User.find({
                 role: "deliveryBoy",
-                location:{
-                    $near:{
-                        $geometry: {type: "Point", coordinates:[Number(longitude), Number(latitude)]},
+                location: {
+                    $near: {
+                        $geometry: { type: "Point", coordinates: [Number(longitude), Number(latitude)] },
                         $maxDistance: 5000
                     }
                 }
-            })
+            });
 
             const nearByIds = nearByDeliveryBoys.map(b => b._id);
             const busyIds = await DeliveryAssignment.find({
@@ -211,13 +223,25 @@ export const getDeliveryBoyAssignment = async (req,res)=>{
         const formated = assignments.map(a=>({
             assignmentId: a._id,
             orderId: a.order._id,
+            shopId: a.shop._id,
             shopName: a.shop.name,
             deliveryAddress: a.order.deliveryAddress,
             items: a.order.shopOrders.find(so=>so._id.equals(a.shopOrderId)).shopOrderItems || [],
             subTotal: a.order.shopOrders.find(so=>so._id.equals(a.shopOrderId))?.subTotal
         }))
 
-        return res.status(200).json(formated)
+        // Remove duplicates in case same order has multiple active assignments (legacy records / race conditions)
+        const uniqueAssignments = [];
+        const seen = new Set();
+        for (const item of formated) {
+            const key = `${item.orderId}-${item.shopId}`;
+            if (!seen.has(key)) {
+                seen.add(key);
+                uniqueAssignments.push(item);
+            }
+        }
+
+        return res.status(200).json(uniqueAssignments)
     } catch (error) {
         return res.status(500).json({message: `getDeliveryBoyAssignment error: ${error}`})
     }
