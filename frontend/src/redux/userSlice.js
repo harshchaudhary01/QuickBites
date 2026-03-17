@@ -36,11 +36,14 @@ const userSlice = createSlice({
         },
         addToCart:(state,action)=>{
             const cartItem = action.payload;
-            const existingItem = state.cartItems.find(i => i._id == cartItem.id);
+            const existingItem = state.cartItems.find(i => i._id === cartItem._id || i._id === cartItem.id || i.id === cartItem.id);
             if(existingItem){
-                existingItem += cartItem.quantity;
+                existingItem.quantity = (existingItem.quantity || 0) + (cartItem.quantity || 1);
             }else{
-                state.cartItems.push(cartItem)
+                state.cartItems.push({
+                    ...cartItem,
+                    quantity: cartItem.quantity || 1
+                });
             }
             state.totalAmount = state.cartItems.reduce((sum,i)=>sum + i.price * i.quantity, 0)
         },
