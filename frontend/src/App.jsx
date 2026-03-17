@@ -23,8 +23,8 @@ import useGetMyOrders from './hooks/useGetMyOrders'
 import useUpdateLocation from './hooks/useUpdateLocation'
 import TrackOrderPage from './pages/TrackOrderPage'
 
-// export const serverUrl = "https://quickbites-backend-co85.onrender.com/" || "http://localhost:5000";
-export const serverUrl = "https://quickbites-backend-co85.onrender.com/";
+// export const serverUrl = "http://localhost:5000";
+export const serverUrl = "https://quickbites-backend-co85.onrender.com";
 
 const App = () => {
   useGetCurrentUser();
