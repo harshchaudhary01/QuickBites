@@ -1,5 +1,5 @@
 import React from 'react'
-import Cards from '../components/cards'
+import Cards from '../components/Cards'
 
 import { useNavigate } from 'react-router-dom';
 import OtherPage from './OtherPage';
