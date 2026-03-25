@@ -24,3 +24,17 @@ export const sendOtpEmail = async (to, otp) => {
     console.error("Error sending email:", error);
   }
 };
+
+
+export const sendDeliveryOtpEmail = async (user, otp) => {
+  try {
+    await transporter.sendMail({
+      from: process.env.MAIL_USER,
+      to: user.email,
+      subject: "Delivery OTP",
+      html: `<p>Your OTP for Delivery is <b>${otp}</b>. It expires in 5 minutes.</p>`
+    });
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
