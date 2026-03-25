@@ -25,7 +25,12 @@ import TrackOrderPage from './pages/TrackOrderPage'
 
 // export const serverUrl = "http://localhost:5000";
 // export const serverUrl = "https://quickbites-backend-co85.onrender.com";
-export const serverUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://quickbites-backend-co85.onrender.com';
+// export const serverUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://quickbites-backend-co85.onrender.com';
+
+export const serverUrl =
+  window.location.hostname === 'localhost'
+    ? 'http://localhost:5000'   // local dev
+    : 'http://backend:5000';    // Docker container
 
 const App = () => {
   useGetCurrentUser();
