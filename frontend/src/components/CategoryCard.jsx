@@ -1,8 +1,8 @@
 import React from 'react'
 
-const CategoryCard = ({name,image}) => {
+const CategoryCard = ({name,image, onClick}) => {
   return (
-    <div className='w-30 h-30 md:w-45 md:h-45 rounded-2xl border-2 border-[#ff4d2d] shrink-0 overflow-hidden bg-white shadow-xl shadow-gray-200 hover:shadow-lg transition-shadow relative'>
+    <div onClick={onClick} className='w-30 h-30 md:w-45 md:h-45 rounded-2xl border-2 border-[#ff4d2d] shrink-0 overflow-hidden bg-white shadow-xl shadow-gray-200 hover:shadow-lg transition-shadow relative'>
       <img src={image} alt="" className='w-full h-full object-cover transform hover:scale-110 transition-transform duration-300' />
       <div className='absolute bottom-0 left-0 w-full bg-[#ffffff96] bg-opacity-95 px-3 py-1 rounded-t-xl text-center shadow font-medium text-gray-800 backdrop-blur'>
         {name}
