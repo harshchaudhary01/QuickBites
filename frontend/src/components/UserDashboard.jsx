@@ -10,8 +10,11 @@ import { FaCircleChevronLeft } from "react-icons/fa6";
 import { FaCircleChevronRight } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import FoodCard from "./FoodCard";
+import {useNavigate} from "react-router-dom";
 
 const UserDashboard = () => {
+
+  const navigate = useNavigate();
 
   const {currentCity, shopsInMyCity, itemsInMyCity} = useSelector(state=>state.user);
 
@@ -101,7 +104,7 @@ useEffect(()=>{
             <FaCircleChevronLeft />
           </button>}
           <div className="w-full flex overflow-x-auto gap-4 pb-2" ref={shopScrollRef}>
-            {shopsInMyCity?.map((shop,idx)=>(<CategoryCard name={shop.name} image={shop.image} key={idx} />))}
+            {shopsInMyCity?.map((shop,idx)=>(<CategoryCard name={shop.name} image={shop.image} key={idx} onClick={()=>navigate(`/shop/${shop._id}`)} />))}
           </div>
           {rightShopBtn && <button onClick={()=>scrollHandler(shopScrollRef,"right")} className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#ff4d2d] text-white p-2 rounded-full shadow-lg hover:bg-[#e64528] z-10">
             <FaCircleChevronRight />
