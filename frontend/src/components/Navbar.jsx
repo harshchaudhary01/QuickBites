@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TiShoppingCart } from "react-icons/ti";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { RxCross1 } from "react-icons/rx";
-import { setUserData } from '../redux/userSlice';
+import { setSearchItems, setUserData } from '../redux/userSlice';
 import axios from 'axios';
 import { serverUrl } from '../App';
 import { FiPlus } from "react-icons/fi";
@@ -21,6 +21,8 @@ const Navbar = () => {
     const [showInfo, setShowInfo] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
 
+    const [query, setQuery] = useState('')
+
     const dispatch = useDispatch();
     const handleLogOut = async () => {
         try {
@@ -30,6 +32,24 @@ const Navbar = () => {
             console.log(error)
         }
     }
+
+    const handleSearchItems = async ()=>{
+      try {
+        const result = await axios.get(`${serverUrl}/api/item/search-items?query=${query}&city=${currentCity}`,{withCredentials: true})
+        dispatch(setSearchItems(result.data))
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    useEffect(()=>{
+        if(query){
+            handleSearchItems();
+        }else{
+            dispatch(setSearchItems(null))
+        }
+    },[query])
+
         return (
             <div className="fixed top-0 w-full h-20 flex items-center justify-between md:justify-center gap-7.5 px-5 py-4 backdrop-blur-lg bg-[#fff9f6] overflow-visible z-50">
 
@@ -51,6 +71,7 @@ const Navbar = () => {
                                 type="text"
                                 placeholder="search delicious food ..."
                                 className="px-2.5 text-gray-700 outline-none w-full"
+                                onChange={(e) => setQuery(e.target.value)} value={query}
                             />
                         </div>
                     </div>
@@ -68,7 +89,7 @@ const Navbar = () => {
                     </div>
                     <div className='w-[80%] flex items-center gap-2.5'>
                         <IoIosSearch size={25} className='text-[#ff4d2d]' />
-                        <input type="text" placeholder='Search delicious foods...' className='w-full px-2.5 text-gray-700 outline-0' />
+                        <input type="text" placeholder='Search delicious foods...' className='w-full px-2.5 text-gray-700 outline-0' onChange={(e) => setQuery(e.target.value)} value={query} />
                     </div>
                 </div>}
 
