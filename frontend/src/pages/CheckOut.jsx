@@ -109,7 +109,7 @@ const CheckOut = () => {
         const options = {
             key: import.meta.env.VITE_RAZORPAY_TEST_API_KEY,
             amount: razorOrder.amount,
-            currentcy: "INR",
+            currency: "INR",
             name: "QuickBites",
             description: "Food Delivery Website",
             order_id: razorOrder.id,
@@ -117,6 +117,8 @@ const CheckOut = () => {
                 try {
                     const result = await axios.post(`${serverUrl}/api/order/verify-payment`,{
                         razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
                         orderId
                     },{withCredentials: true})
                     dispatch(addMyOrder(result.data));

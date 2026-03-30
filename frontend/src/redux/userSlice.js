@@ -65,7 +65,8 @@ const userSlice = createSlice({
             state.myOrders = action.payload
         },
         addMyOrder:(state,action)=>{
-            state.myOrders = [action.payload, ...state.myOrders]
+            const existingOrders = Array.isArray(state.myOrders) ? state.myOrders : [];
+            state.myOrders = [action.payload, ...existingOrders]
         },
         updateOrderStatus:(state, action)=>{
             const {orderId, shopId, status} = action.payload;

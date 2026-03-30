@@ -15,7 +15,7 @@ function useGetMyOrders(){
                 dispatch(setMyOrders(result.data))
             } catch (error) {
                 console.log(error);
-                dispatch(setMyOrders(null));
+                dispatch(setMyOrders([]));
             }            
         }
         fetchOrders();

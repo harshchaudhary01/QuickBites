@@ -93,24 +93,40 @@ export const placeOrder = async (req, res) => {
     }
 }
 
-export const verifyPayment = async (req,res) => {
+export const verifyPayment = async (req, res) => {
     try {
-        const {razorpay_payment_id, order_id} = req.body;
+        const { razorpay_payment_id, orderId, order_id } = req.body;
+        const appOrderId = orderId || order_id;
+
+        if (!razorpay_payment_id || !appOrderId) {
+            return res.status(400).json({ message: "razorpay_payment_id and orderId are required" });
+        }
+
         const payment = await instance.payments.fetch(razorpay_payment_id);
-        if(!payment || payment.status!="captured"){
-            return res.status(400).json({message: "Payment not captured"});
+        if (!payment || payment.status !== "captured") {
+            return res.status(400).json({ message: "Payment not captured" });
         }
-        const order = await Order.findById(orderId);
-        if(!order){
-            return res.status(400).json({message: "order not found"});
+
+        const order = await Order.findById(appOrderId);
+        if (!order) {
+            return res.status(400).json({ message: "Order not found" });
         }
+
+        if (order.razorpayOrderId && payment.order_id && order.razorpayOrderId !== payment.order_id) {
+            return res.status(400).json({ message: "Payment order mismatch" });
+        }
+
         order.payment = true;
-        order.razorpayPaymentId = razorpay_payment_id
+        order.razorpayPaymentId = razorpay_payment_id;
+        if (!order.razorpayOrderId && payment.order_id) {
+            order.razorpayOrderId = payment.order_id;
+        }
         await order.save();
-        return res.status(200).json(order);
 
         await order.populate("shopOrders.shopOrderItems.item", "name image price")
         await order.populate("shopOrders.shop", "name")
+
+        return res.status(200).json(order);
     } catch (error) {
         return res.status(500).json({ message: `verify payment error: ${error}` })
     }
