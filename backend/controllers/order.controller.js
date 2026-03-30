@@ -6,6 +6,7 @@ import { sendDeliveryOtpEmail } from "../utils/mail.js";
 import dotenv from "dotenv";
 dotenv.config();
 import Razorpay from "razorpay";
+import crypto from "crypto";
 
 let instance = new Razorpay({
     key_id: process.env.RAZORPAY_TEST_API_KEY,
@@ -93,42 +94,99 @@ export const placeOrder = async (req, res) => {
     }
 }
 
+// export const verifyPayment = async (req, res) => {
+//     try {
+//         const { razorpay_payment_id, orderId, order_id } = req.body;
+//         const appOrderId = orderId || order_id;
+
+//         if (!razorpay_payment_id || !appOrderId) {
+//             return res.status(400).json({ message: "razorpay_payment_id and orderId are required" });
+//         }
+
+//         const payment = await instance.payments.fetch(razorpay_payment_id);
+//         if (!payment || payment.status !== "captured") {
+//             return res.status(400).json({ message: "Payment not captured" });
+//         }
+
+//         const order = await Order.findById(appOrderId);
+//         if (!order) {
+//             return res.status(400).json({ message: "Order not found" });
+//         }
+
+//         if (order.razorpayOrderId && payment.order_id && order.razorpayOrderId !== payment.order_id) {
+//             return res.status(400).json({ message: "Payment order mismatch" });
+//         }
+
+//         order.payment = true;
+//         order.razorpayPaymentId = razorpay_payment_id;
+//         if (!order.razorpayOrderId && payment.order_id) {
+//             order.razorpayOrderId = payment.order_id;
+//         }
+//         await order.save();
+
+//         await order.populate("shopOrders.shopOrderItems.item", "name image price")
+//         await order.populate("shopOrders.shop", "name")
+
+//         return res.status(200).json(order);
+//     } catch (error) {
+//         return res.status(500).json({ message: `verify payment error: ${error}` })
+//     }
+// }
+
 export const verifyPayment = async (req, res) => {
     try {
-        const { razorpay_payment_id, orderId, order_id } = req.body;
-        const appOrderId = orderId || order_id;
+        const { razorpay_payment_id, razorpay_order_id, razorpay_signature, orderId } = req.body;
 
-        if (!razorpay_payment_id || !appOrderId) {
-            return res.status(400).json({ message: "razorpay_payment_id and orderId are required" });
+        if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature || !orderId) {
+            return res.status(400).json({ message: "All payment fields are required" });
         }
 
+        // ✅ Verify Signature
+        const generated_signature = crypto
+            .createHmac("sha256", process.env.RAZORPAY_TEST_KEY_SECRET)
+            .update(razorpay_order_id + "|" + razorpay_payment_id)
+            .digest("hex");
+
+        if (generated_signature !== razorpay_signature) {
+            return res.status(400).json({ message: "Invalid signature" });
+        }
+
+        // ✅ Fetch payment (same as your logic)
         const payment = await instance.payments.fetch(razorpay_payment_id);
-        if (!payment || payment.status !== "captured") {
-            return res.status(400).json({ message: "Payment not captured" });
+
+        if (!payment) {
+            return res.status(400).json({ message: "Payment not found" });
         }
 
-        const order = await Order.findById(appOrderId);
+        // ✅ Relaxed status check
+        if (payment.status !== "captured" && payment.status !== "authorized") {
+            return res.status(400).json({ message: "Payment not valid" });
+        }
+
+        const order = await Order.findById(orderId);
         if (!order) {
             return res.status(400).json({ message: "Order not found" });
         }
 
+        // ✅ Match Razorpay order ID
         if (order.razorpayOrderId && payment.order_id && order.razorpayOrderId !== payment.order_id) {
             return res.status(400).json({ message: "Payment order mismatch" });
         }
 
+        // ✅ Update order (fixed)
         order.payment = true;
         order.razorpayPaymentId = razorpay_payment_id;
-        if (!order.razorpayOrderId && payment.order_id) {
-            order.razorpayOrderId = payment.order_id;
-        }
+        order.razorpayOrderId = razorpay_order_id;
+
         await order.save();
 
-        await order.populate("shopOrders.shopOrderItems.item", "name image price")
-        await order.populate("shopOrders.shop", "name")
+        await order.populate("shopOrders.shopOrderItems.item", "name image price");
+        await order.populate("shopOrders.shop", "name");
 
         return res.status(200).json(order);
+
     } catch (error) {
-        return res.status(500).json({ message: `verify payment error: ${error}` })
+        return res.status(500).json({ message: `verify payment error: ${error}` });
     }
 }
 
