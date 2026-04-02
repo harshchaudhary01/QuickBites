@@ -13,6 +13,41 @@ let instance = new Razorpay({
     key_secret: process.env.RAZORPAY_TEST_KEY_SECRET,
 });
 
+const emitNewOrderToOwners = async (req, orderDoc) => {
+    const io = req.app.get("io");
+
+    if (!io || !orderDoc) {
+        return;
+    }
+
+    await orderDoc.populate("shopOrders.shopOrderItems.item", "name image price");
+    await orderDoc.populate("shopOrders.shop", "name");
+    await orderDoc.populate("user", "fullName email mobile");
+
+    const ownerIds = [...new Set(orderDoc.shopOrders.map(shopOrder => String(shopOrder.owner)))];
+    const owners = await User.find({ _id: { $in: ownerIds } }).select("_id socketId");
+    const ownerSocketMap = new Map(owners.map(owner => [String(owner._id), owner.socketId]));
+
+    orderDoc.shopOrders.forEach(shopOrder => {
+        const ownerId = String(shopOrder.owner);
+        const ownerSocketId = ownerSocketMap.get(ownerId);
+
+        if (!ownerSocketId) {
+            return;
+        }
+
+        io.to(ownerSocketId).emit("newOrder", {
+            _id: orderDoc._id,
+            paymentMethod: orderDoc.paymentMethod,
+            user: orderDoc.user,
+            shopOrders: shopOrder,
+            createdAt: orderDoc.createdAt,
+            deliveryAddress: orderDoc.deliveryAddress,
+            payment: orderDoc.payment
+        });
+    });
+};
+
 export const placeOrder = async (req, res) => {
     try {
         const { cartItems, paymentMethod, deliveryAddress, totalAmount } = req.body;
@@ -84,8 +119,7 @@ export const placeOrder = async (req, res) => {
             shopOrders
         })
 
-        await newOrder.populate("shopOrders.shopOrderItems.item", "name image price")
-        await newOrder.populate("shopOrders.shop", "name")
+        await emitNewOrderToOwners(req, newOrder);
 
         return res.status(201).json(newOrder)
 
@@ -180,8 +214,7 @@ export const verifyPayment = async (req, res) => {
 
         await order.save();
 
-        await order.populate("shopOrders.shopOrderItems.item", "name image price");
-        await order.populate("shopOrders.shop", "name");
+        await emitNewOrderToOwners(req, order);
 
         return res.status(200).json(order);
 

@@ -26,11 +26,18 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     isOtpVerified: {
-        type: String,
+        type: Boolean,
         default: false
     },
     otpExpires: {
         type: Date
+    },
+    socketId:{
+        type:String
+    },
+    isOnline: {
+        type: Boolean,
+        default: false
     },
     location: { // this is known as GeoJsonFormat, in this we store the geolocation type data
         type:{

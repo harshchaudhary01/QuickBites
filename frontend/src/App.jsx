@@ -7,7 +7,7 @@ import ForgotPassword from './pages/ForgotPassword'
 import OtherPage from './pages/OtherPage'
 import useGetCurrentUser from './hooks/useGetCurrentUser'
 import Home from './pages/Home'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import useGetCity from './hooks/useGetCity'
 import useGetMyShop from './hooks/useGetMyShop'
 import CreateEditShop from './pages/CreateEditShop'
@@ -23,6 +23,9 @@ import useGetMyOrders from './hooks/useGetMyOrders'
 import useUpdateLocation from './hooks/useUpdateLocation'
 import TrackOrderPage from './pages/TrackOrderPage'
 import Shop from './components/Shop'
+import { useEffect } from 'react'
+import { io } from 'socket.io-client'
+import { setSocket } from './redux/userSlice'
 
 // export const serverUrl = "http://localhost:5000";
 // export const serverUrl = "https://quickbites-backend-co85.onrender.com";
@@ -42,7 +45,21 @@ const App = () => {
   useGetItemsByCity();
   useGetMyOrders();
   const {userData, isLoading} = useSelector(state => state.user);
-  
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    const socketInstance = io(serverUrl,{withCredentials: true});
+    dispatch(setSocket(socketInstance))
+    socketInstance.on('connect',()=>{
+      if(userData){
+        socketInstance.emit('identity',{userId: userData._id});
+      }
+    })
+    return ()=>{
+      socketInstance.disconnect();
+    }
+  },[userData?._id])
+
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
