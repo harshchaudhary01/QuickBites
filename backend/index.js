@@ -13,6 +13,7 @@ import orderRouter from "./routes/order.routes.js";
 import http from "http";
 import { Server } from "socket.io";
 import { socketHandler } from "./socket.js";
+import { measureResponseTime } from "./middlewares/performance.js";
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(cors({
 // "use" is use for the global change, it means it globally
 app.use(express.json());
 app.use(cookieParser());
+app.use(measureResponseTime);
 
 app.use("/api/auth", authRouter); // we want that every routes in the authRouter passes through "/api/auth"
 app.use("/api/user", userRouter); // we want that every routes in the authRouter passes through "/api/user"
