@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: quickbites-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URL
+        prompt: false
+      - key: JWT_SECRET
+        prompt: false
+      - key: FRONTEND_URL
+        prompt: false
+        value: https://your-vercel-frontend-url.vercel.app
+      - key: MAIL_USER
+        prompt: false
+      - key: MAIL_PASS
+        prompt: false
+      - key: CLOUDINARY_CLOUD_NAME
+        prompt: false
+      - key: CLOUDINARY_API_KEY
+        prompt: false
+      - key: CLOUDINARY_API_SECRET
+        prompt: false
+      - key: RAZORPAY_TEST_API_KEY
+        prompt: false
+      - key: RAZORPAY_TEST_KEY_SECRET
+        prompt: false
+      - key: PORT
+        value: 5000

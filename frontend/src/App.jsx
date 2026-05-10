@@ -27,14 +27,11 @@ import { useEffect } from 'react'
 import { io } from 'socket.io-client'
 import { setSocket } from './redux/userSlice'
 
-// export const serverUrl = "http://localhost:5000";
-// export const serverUrl = "https://quickbites-backend-co85.onrender.com";
-// export const serverUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://quickbites-backend-co85.onrender.com';
-
+// Backend URL configuration for different environments
 export const serverUrl =
   window.location.hostname === 'localhost'
     ? 'http://localhost:5000'   // local dev
-    : 'http://backend:5000';    // Docker container
+    : import.meta.env.VITE_BACKEND_URL || window.location.origin.replace(/^http/, 'http');
 
 const App = () => {
   useGetCurrentUser();

@@ -9,4 +9,5 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["npm", "run", "dev"]
+# Use start script for production (not dev/nodemon)
+CMD ["npm", "start"]
